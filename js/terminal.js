@@ -15,7 +15,7 @@ var sound = new Howl({
 });
 
 var boot_sound = new Howl({
-  src: ["sounds/boot_real.mp3"],
+  src: ["sounds/boot.mp3"],
   autoplay: false
 });
 
@@ -42,8 +42,8 @@ var command_list = [
 ];
 
 var help_description = [
-  ["? - Prints the introduction message."],
-  ["help - Lists the available commands with their description."],
+ // ["? - Prints the introduction message."],
+ // ["help - Lists the available commands with their description."],
   ["bio - Prints a short biography."],
   ["contact - Lets the user send a message to the webmaster."],
   ["clear - Clears the screen."],
@@ -280,7 +280,7 @@ function clear_scr() {
 }
 
 function bio() {
-  create_display(["", "", "", "", ""]);
+  create_display(["", "My name is Haroldo Vivallo I am a Computer Science Engineer currently working as a Full-Stack in Santiago, Chile, developing management and data visualization systems focused on digital transformation.", "I am very interested in Artificial Intelligence, Machine learning and Big Data, and that's why I'm doing a Master in Artificial Intelligence.", ""]);
 }
 
 function ls() {
@@ -288,20 +288,24 @@ function ls() {
 }
 
 function get(args) {
-  request = $.ajax({
-    url: "php/downloads.php",
-    type: "POST",
-    data: { f: args[1] },
-    success: function(result) {
-      result = JSON.parse(result);
-      console.log(result);
-      if (result["found"]) {
-        window.location = result["address"];
-      } else {
-        create_display("File not found!");
-      }
-    }
-  });
+  // request = $.ajax({
+  //   url: "php/downloads.php",
+  //   type: "POST",
+  //   data: { f: args[1] },
+  //   success: function(result) {
+  //     result = JSON.parse(result);
+  //     console.log(result);
+  //     if (result["found"]) {
+  //       window.location = result["address"];
+  //     } else {
+  //       create_display("File not found!");
+  //     }
+  //   }
+  // });
+  var link = document.createElement("a");
+  link.download = 'cv';
+  link.href = '../cv.pdf';
+  link.click();
 }
 
 function forwhom(args) {
@@ -339,7 +343,7 @@ function help() {
 function about() {
   create_display([
     //"",
-    "Based on terminal.js by Arturo CURIEL and Fallout Terminal Inspired Style by Mack Richardson."
+    "","This is my personal site","Based on terminal.js by Arturo CURIEL and Fallout Terminal Inspired Style by Mack Richardson.",""
   ]);
 }
 
@@ -670,14 +674,28 @@ function playSound() {
   if (boot) {
     boot = false;
     // Clear listener after first call.
-    boot_sound.once("load", function() {
-      boot_sound.play();
-    });
+    // boot_sound.once("load", function() {
+    //   boot_sound.play();
+    //   boot_sound.volume(0.15);
+    // });
     boot_sound.play();
-    // Fires when the sound finishes playing.
-    boot_sound.on("end", function() {
-      sound.play();
+    boot_sound.volume(0.35);
+    boot_sound.on('play', function(){
+      var fadeouttime = 5000;
+      setTimeout(
+        function(){
+          boot_sound.fade(0.35, 0, fadeouttime);
+        },
+        (boot_sound.duration()/3 - boot_sound.seek())*1000 - fadeouttime
+      );
     });
+    // boot_sound.play();
+    // boot_sound.volume(0.15);
+    // Fires when the sound finishes playing.
+    // boot_sound.on("end", function() {
+    //   sound.play();
+    //   sound.volume(0.10);
+    // });
   } else {
   }
 }
